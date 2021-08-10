@@ -1,0 +1,4 @@
+-- Monte uma query que:
+-- Cria um banco de dados chamado normalization;
+-- Cria todas as tabelas resultantes do exercício 2 (na 2ª Forma Normal);
+-- Popula todas as tabelas com os dados fornecidos nos exercícios.
