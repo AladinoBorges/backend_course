@@ -1,0 +1,76 @@
+const SALES_DATA = [
+  {
+    _id: 1,
+    item: "abc",
+    price: 10,
+    fee: 2,
+    discount: 5,
+    date: ISODate("2014-03-01T08:00:00Z"),
+  },
+  {
+    _id: 2,
+    item: "jkl",
+    price: 20,
+    fee: 1,
+    discount: 2,
+    date: ISODate("2014-03-01T09:00:00Z"),
+  },
+];
+
+use("storage");
+
+db.sales.deleteMany({});
+
+db.sales.insertMany(SALES_DATA);
+
+db.sales.aggregate([
+  {
+    $project: {
+      item: true,
+      total: {
+        $subtract: [{ $add: ["$price", "$fee"] }, "$discount"],
+      },
+    },
+  },
+]); //* Observe que um dos argumentos do $subtract é o resultado de uma expressão ($add) que soma dois campos da coleção (price e fee). O segundo argumento (valor a ser subtraído) recebe o campo $discount.
+
+db.sales.aggregate([
+  {
+    $project: { item: true, dateDifference: { $subtract: ["$$NOW", "$date"] } },
+  },
+]);
+
+//! Alternativamente, você pode utilizar a função Date() para obter a data corrente:
+db.sales.aggregate([
+  {
+    $project: {
+      item: true,
+      dateDifference: { $subtract: [new Date(), "$date"] },
+    },
+  },
+]);
+
+//! Também se pode utilizar milissegundos como argumento da subtração. A operação seguinte subtrai 5 minutos do campo date:
+const MILLISECONDS = 5 * 60 * 1000;
+
+db.sales.aggregate([
+  {
+    $project: {
+      item: true,
+      dateDifference: { $subtract: ["$date", MILLISECONDS] },
+    },
+  },
+]);
+
+//todo: Utilizando o banco de dados storage, calcular qual o lucro total de cada produto, considerando o preço de compra, os impostos e seu valor de venda.
+db.products.aggregate([
+  {
+    $project: {
+      _id: false,
+      name: true,
+      total_revenue: {
+        $subtract: ["$sale_price", { $add: ["$purchase_price", "$taxes"] }],
+      },
+    },
+  },
+]);
