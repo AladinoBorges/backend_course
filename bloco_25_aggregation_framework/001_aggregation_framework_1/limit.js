@@ -1,0 +1,62 @@
+//? O operador $limit limita o número de documentos que será passado para o próximo estágio do pipeline. Ele sempre recebe um valor do tipo inteiro e positivo.
+db.articles.aggregate([{ $limit: 5 }]);
+
+const DATA = [
+  {
+    value: 5900,
+    from: "Dave America",
+    to: "Ned Flanders",
+    bank: "International",
+  },
+  { value: 1000, from: "Mark Zuck", to: "Edna Krabappel", bank: "FloridaBank" },
+  {
+    value: 209,
+    from: "Lisa Simpson",
+    to: "Dave America",
+    bank: "bankOfAmerica",
+  },
+  { value: 10800, from: "Arnold Schuz", to: "Mark Zuck", bank: "JPMorgan" },
+  { value: 850, from: "Barney Gumble", to: "Lisa Simpson", bank: "Citigroup" },
+  {
+    value: 76000,
+    from: "Ned Flanders",
+    to: "Edna Krabappel",
+    bank: "JPMorgan",
+  },
+  { value: 1280, from: "Dave America", to: "Homer Simpson", bank: "Citigroup" },
+  {
+    value: 7000,
+    from: "Arnold Schuz",
+    to: "Ned Flanders",
+    bank: "International",
+  },
+  {
+    value: 59020,
+    from: "Homer Simpson",
+    to: "Lisa Simpson",
+    bank: "International",
+  },
+  { value: 100, from: "Mark Zuck", to: "Barney Gumble", bank: "FloridaBank" },
+];
+
+db.transactions.deleteMany({});
+
+db.transactions.insertMany(DATA);
+
+//todo: Selecione todas as transações feitas pelo cliente chamado "Dave America".
+db.transactions.aggregate([{ $match: { from: "Dave America" } }]);
+
+//todo: Selecione todas as transações com o valor entre 700 e 6000, ou que sejam recebidas pela cliente "Lisa Simpson".
+db.transactions.aggregate([
+  {
+    $match: {
+      $or: [{ value: { $gte: 700, $lte: 6000 } }, { from: "Lisa Simpson" }],
+    },
+  },
+]);
+
+//todo: Selecione três transações com o valor acima de 1000.
+db.transactions.aggregate([
+  { $match: { value: { $gt: 1000 } } },
+  { $limit: 3 },
+]);

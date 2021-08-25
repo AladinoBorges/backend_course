@@ -1,0 +1,39 @@
+const UPSERT = { upsert: true };
+const FILTERS = { _id: 1 };
+const VALUES = { items: { name: "notepad", price: 35.29, quantity: 2 } };
+
+// PUSH SIMPLES
+use("sales");
+
+db.supplies.updateOne({}, { $unset: { items: "" } }); // limpar o objecto 'items'
+
+db.supplies.updateOne(FILTERS, { $push: VALUES }, UPSERT);
+
+// PUSH COM MÚLTIPLOS VALORES
+VALUES = {
+  items: {
+    $each: [
+      { name: "pens", price: 56.12, quantity: 5 },
+      { name: "envelopes", price: 19.95, quantity: 8 },
+    ],
+  },
+};
+
+db.supplies.updateOne({}, { $push: VALUES }, UPSERT);
+
+// PUSH COM MÚLTIPLOS MODIFICADORES
+VALUES = {
+  items: {
+    $each: [
+      { name: "pensil", price: 35.29, quantity: 3 },
+      { name: "blank books", price: 19.95, quantity: 9 },
+      { name: "backpack", price: 80.99, quantity: 13 },
+    ],
+    $sort: { quantity: -1 },
+    $slice: 5,
+  },
+};
+
+db.supplies.updateOne(FILTERS, { $push: VALUES }, UPSERT);
+
+db.supplies.find().pretty();
