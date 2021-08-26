@@ -4,6 +4,8 @@ const scripts = [
   { name: "Gessing Game", script: "./guessingGame.js" },
   { name: "Índice de Massa Corporal", script: "./imc.js" },
   { name: "Velocidade Média", script: "./speed.js" },
+  { name: "Factorial", script: "./factorial.js" },
+  { name: "Fibonacci", script: "./fibonacci.js" },
 ];
 
 function generateList() {

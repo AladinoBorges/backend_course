@@ -8,6 +8,8 @@
     "imc": "node imc.js",
     "speed": "node speed.js",
     "guessing": "node guessingGame.js",
+    "factorial": "node factorial.js",
+    "fibonacci": "node fibonacci.js",
     "start": "node index.js"
   },
   "keywords": [],
