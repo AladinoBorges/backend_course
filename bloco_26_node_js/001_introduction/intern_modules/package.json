@@ -1,0 +1,13 @@
+{
+  "name": "intern_modules",
+  "version": "1.0.0",
+  "description": "",
+  "main": "reader_app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node reader_app.js"
+  },
+  "keywords": [],
+  "author": "Aladino Borges",
+  "license": "ISC"
+}
