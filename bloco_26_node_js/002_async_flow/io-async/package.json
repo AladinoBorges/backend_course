@@ -1,11 +1,11 @@
 {
-  "name": "io-local",
+  "name": "io-async",
   "version": "1.0.0",
   "description": "",
-  "main": "readFileSync.js",
+  "main": "readFile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node readFileSync.js"
+    "start": "node readFile.js"
   },
   "keywords": [],
   "author": "Aladino Borges",
