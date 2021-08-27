@@ -1,1 +1,2 @@
 Este texto foi escrito diretamente no algoritmo.
+Este é o texto que será concatenado ao atual do arquivo.

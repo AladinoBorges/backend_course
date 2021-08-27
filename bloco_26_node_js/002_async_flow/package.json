@@ -9,6 +9,8 @@
     "promises": "node promises.js",
     "reader": "node files_reader.js",
     "writer": "node writeFile.js",
+    "awaiter": "node async_await.js",
+    "many": "node async_await_many_promises.js",
     "start": "node index.js"
   },
   "keywords": [],
