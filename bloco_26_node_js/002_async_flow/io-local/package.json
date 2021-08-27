@@ -1,0 +1,13 @@
+{
+  "name": "io-local",
+  "version": "1.0.0",
+  "description": "",
+  "main": "readFileSync.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sync": "node readFileSync.js"
+  },
+  "keywords": [],
+  "author": "Aladino Borges",
+  "license": "ISC"
+}
