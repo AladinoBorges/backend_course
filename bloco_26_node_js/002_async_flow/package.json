@@ -8,6 +8,7 @@
     "callbacks": "node callbacks.js",
     "promises": "node promises.js",
     "reader": "node files_reader.js",
+    "writer": "node writeFile.js",
     "start": "node index.js"
   },
   "keywords": [],
