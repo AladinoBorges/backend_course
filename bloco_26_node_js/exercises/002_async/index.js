@@ -13,6 +13,10 @@ const scripts = [
     name: "JSON Reader Async/Await",
     script: "./jsonReader.js",
   },
+  {
+    name: "TXT File Creator and Reader",
+    script: "./txtReaderCreator.js",
+  },
 ];
 
 function generateUserMenu() {
