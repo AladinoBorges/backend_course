@@ -9,6 +9,10 @@ const scripts = [
     name: "Calculator with Async/Await",
     script: "./numberValidatorAsyncAwait.js",
   },
+  {
+    name: "JSON Reader Async/Await",
+    script: "./jsonReader.js",
+  },
 ];
 
 function generateUserMenu() {
