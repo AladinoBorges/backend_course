@@ -99,7 +99,29 @@ app.route("/recipes/search").get((request, response) => {
   }
 });
 
-app.route("/drinks/search");
+app.route("/drinks/search").get((request, response) => {
+  const { name, minPrice, maxPrice } = request.query;
+
+  const filteredDrinks = searchByNameAndPrices(
+    drinksDatabaseSorted,
+    name,
+    minPrice,
+    maxPrice,
+  );
+
+  if (!filteredDrinks.length) {
+    return response.status(404).json({
+      404: "Nenhuma bebida encontrada.",
+      "termos de busca": {
+        nome: name,
+        "Preço mínimo": `${!minPrice ? "undefined" : minPrice}`,
+        "Preço máximo": `${!maxPrice ? "undefined" : maxPrice}`,
+      },
+    });
+  } else {
+    response.status(200).json(filteredDrinks);
+  }
+});
 
 // ? Parâmetros de rota: o caso em que precisamos acessar objetos específicos, o express tem alguns recursos para que conseguimos passar informações além da rota que desejamos buscar. Vamos começar falando de parâmetro de rotas. Você provavelmente já se deparou com URLs no seguinte formato http://<site>/noticias/489 ou http://<site>/pedidos/713. Esses valores que são passados nas rotas que geralmente devolvem uma página seguindo o mesmo template mas com um conteúdo diferente é implementado graças ao parâmetro de rota. Imagina se para cada nova notícia ou pedido você tivesse que criar uma rota específica exatamente com /noticias/489 ou /pedidos/713 ? o trabalho das pessoas desenvolvedoras seria passar o dia inteiro escrevendo rotas. Para facilitar esse processo, utilizamos parâmetros de rota, que no Express, podem ser definidos da seguinte forma: /<rota>/<:parametro> onde :parametro vai servir para qualquer valor que vier na URL com aquele prefixo específico.
 app.route("/recipes/:id").get((request, response) => {
