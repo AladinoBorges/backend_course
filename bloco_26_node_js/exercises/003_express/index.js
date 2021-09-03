@@ -8,11 +8,17 @@ const {
   filePaths: { simpsons },
 } = require("./services/filesReaderAndWriter.js");
 const { ageValidator, userInfoValidator } = require("./services/validators.js");
-// const simpsonsDatabase = require("./mocked_databases/simpsons.json");
+const { findPersonageById } = require("./services/databaseInfoHandlers.js");
 
 const mockedDatabase = simpsons;
 
 const MINUS_X = -1;
+
+function handleReader() {
+  const result = fileReader(mockedDatabase);
+
+  return result;
+}
 
 const app = express();
 
@@ -68,8 +74,9 @@ app.route("/users/:name/:age").put((request, response) => {
 // * Caso algum erro ocorra, deve ser retornado um código 500 (Internal Server Error);
 // * Caso dê tudo certo, a resposta deve voltar com status 200 OK;
 // * Para testar sua API durante o desenvolvimento, utilize ferramentas que permitem fazer requisições HTTP, como Postman, Insomnia, httpie ou Thunder Client.
+// todo 6. Criar um endpoint GET /simpsons. O endpoint deve retornar um array com todos os Simpsons.
 app.route("/simpsons").get(async (_request, response) => {
-  const databaseExistenceValidator = await fileReader(mockedDatabase);
+  const databaseExistenceValidator = await handleReader();
 
   if (databaseExistenceValidator) {
     return response.status(200).json(databaseExistenceValidator);
@@ -78,9 +85,20 @@ app.route("/simpsons").get(async (_request, response) => {
   }
 });
 
-// todo 6. Criar um endpoint GET /simpsons. O endpoint deve retornar um array com todos os Simpsons.
-
 // todo 7. Criar um endpoint GET /simpsons/:id. O endpoint deve retornar o personagem com o id informado na URL da requisição. Caso não exista nenhum personagem com o id especificado, retorne o JSON { message: 'simpson not found' } com o status 404 - Not Found.
+app.route("/simpsons/:id").get(async (request, response) => {
+  const { id } = request.params;
+
+  const simpsonsDatabase = await handleReader();
+
+  const personage = await findPersonageById(simpsonsDatabase, id);
+
+  if (!personage) {
+    return response.status(404).json({ message: "Simpson not found." });
+  } else {
+    response.status(200).json(personage);
+  }
+});
 
 // todo 8. Criar um endpoint POST '/simpsons':
 // * Este endpoint deve cadastrar novos personagens;
