@@ -3,7 +3,7 @@ const fs = require("fs").promises;
 const { readFile, writeFile } = fs;
 
 const filePaths = {
-  simpsons: "../mocked_databases/simpsons.js",
+  simpsons: "./mocked_databases/simpsons.json",
 };
 
 const ENCODING = "utf8";

@@ -5,12 +5,12 @@ const cors = require("cors");
 const {
   fileReader,
   fileWriter,
-  filePaths,
+  filePaths: { simpsons },
 } = require("./services/filesReaderAndWriter.js");
 const { ageValidator, userInfoValidator } = require("./services/validators.js");
-const simpsonsDatabase = require("./mocked_databases/simpsons.json");
+// const simpsonsDatabase = require("./mocked_databases/simpsons.json");
 
-const mockedDatabase = [...simpsonsDatabase];
+const mockedDatabase = simpsons;
 
 const MINUS_X = -1;
 
@@ -68,6 +68,15 @@ app.route("/users/:name/:age").put((request, response) => {
 // * Caso algum erro ocorra, deve ser retornado um código 500 (Internal Server Error);
 // * Caso dê tudo certo, a resposta deve voltar com status 200 OK;
 // * Para testar sua API durante o desenvolvimento, utilize ferramentas que permitem fazer requisições HTTP, como Postman, Insomnia, httpie ou Thunder Client.
+app.route("/simpsons").get(async (_request, response) => {
+  const databaseExistenceValidator = await fileReader(mockedDatabase);
+
+  if (databaseExistenceValidator) {
+    return response.status(200).json(databaseExistenceValidator);
+  } else {
+    response.status(500).json({ Erro: "Internal Server Error." });
+  }
+});
 
 // todo 6. Criar um endpoint GET /simpsons. O endpoint deve retornar um array com todos os Simpsons.
 
