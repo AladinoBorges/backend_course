@@ -7,7 +7,11 @@ const {
   fileWriter,
   filePaths: { simpsons },
 } = require("./services/filesReaderAndWriter.js");
-const { ageValidator, userInfoValidator } = require("./services/validators.js");
+const {
+  ageValidator,
+  userInfoValidator,
+  userTokenValidator,
+} = require("./services/validators.js");
 const {
   findPersonageById,
   checkIfExists,
@@ -29,13 +33,29 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // todo 1. Rota GET /ping que deve retornar o seguinte JSON: { message: 'pong' }.
-app.route("/ping").get((_request, response) => {
+app.route("/ping").get((request, response) => {
+  const token = request.headers.authorization;
+
+  const validatedToken = userTokenValidator(token);
+
+  if (!validatedToken) {
+    return response.status(401).json({ message: "Token inválido." });
+  }
+
   response.status(200).json({ message: "pong" });
 });
 
 // todo 2. Rota POST /hello que deve receber, no body da requisição, o seguinte JSON: { "name": "<nome do usuário>" }; e deve retornar o seguinte JSON: { "message": "Hello, <nome do usuário>!" }.
 app.route("/hello").post((request, response) => {
   const { name } = request.body;
+
+  const token = request.headers.authorization;
+
+  const validatedToken = userTokenValidator(token);
+
+  if (!validatedToken) {
+    return response.status(401).json({ message: "Token inválido." });
+  }
 
   response.status(201).json({ message: `Hello, ${name}` });
 });
@@ -46,9 +66,17 @@ app.route("/hello").post((request, response) => {
 app.route("/greetings").post((request, response) => {
   const { name, age } = request.body;
 
-  const validated = ageValidator(age);
+  const validatedAge = ageValidator(age);
 
-  if (!validated) {
+  const token = request.headers.authorization;
+
+  const validatedToken = userTokenValidator(token);
+
+  if (!validatedToken) {
+    return response.status(401).json({ message: "Token inválido." });
+  }
+
+  if (!validatedAge) {
     return response.status(401).json({ message: "Unauthorized" });
   } else {
     response.status(200).json({ message: `Hello, ${name}` });
@@ -60,6 +88,14 @@ app.route("/users/:name/:age").put((request, response) => {
   const { name, age } = request.params;
 
   const validated = userInfoValidator(name, age);
+
+  const token = request.headers.authorization;
+
+  const validatedToken = userTokenValidator(token);
+
+  if (!validatedToken) {
+    return response.status(401).json({ message: "Token inválido." });
+  }
 
   if (validated.userAge < 18) {
     return response.status(401).json({
@@ -88,8 +124,16 @@ app.route("/users/:name/:age").put((request, response) => {
 
 app
   .route("/simpsons")
-  .get(async (_request, response) => {
+  .get(async (request, response) => {
     const databaseExistenceValidator = await handleReader();
+
+    const token = request.headers.authorization;
+
+    const validatedToken = userTokenValidator(token);
+
+    if (!validatedToken) {
+      return response.status(401).json({ message: "Token inválido." });
+    }
 
     if (databaseExistenceValidator) {
       return response.status(200).json(databaseExistenceValidator);
@@ -101,6 +145,14 @@ app
     const { id, name } = request.body;
 
     const simpsonsDatabase = await handleReader();
+
+    const token = request.headers.authorization;
+
+    const validatedToken = userTokenValidator(token);
+
+    if (!validatedToken) {
+      return response.status(401).json({ message: "Token inválido." });
+    }
 
     const personageValidator = checkIfExists(simpsonsDatabase, id);
 
@@ -122,6 +174,14 @@ app.route("/simpsons/:id").get(async (request, response) => {
   const simpsonsDatabase = await handleReader();
 
   const personage = findPersonageById(simpsonsDatabase, id);
+
+  const token = request.headers.authorization;
+
+  const validatedToken = userTokenValidator(token);
+
+  if (!validatedToken) {
+    return response.status(401).json({ message: "Token inválido." });
+  }
 
   if (!personage) {
     return response.status(404).json({ message: "Simpson not found." });

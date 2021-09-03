@@ -1,4 +1,5 @@
 const MIN_AGE = 17;
+const MIN_LENGTH = 16;
 
 function ageValidator(age) {
   const stringToNumber = Number(age);
@@ -19,4 +20,10 @@ function userInfoValidator(name, age) {
   return result;
 }
 
-module.exports = { ageValidator, userInfoValidator };
+function userTokenValidator(token) {
+  const result = token && token.length >= MIN_LENGTH;
+
+  return result;
+}
+
+module.exports = { ageValidator, userInfoValidator, userTokenValidator };
