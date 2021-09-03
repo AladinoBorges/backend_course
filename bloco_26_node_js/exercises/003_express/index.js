@@ -24,6 +24,11 @@ app.route("/ping").get((_request, response) => {
 });
 
 // todo 2. Rota POST /hello que deve receber, no body da requisição, o seguinte JSON: { "name": "<nome do usuário>" }; e deve retornar o seguinte JSON: { "message": "Hello, <nome do usuário>!" }.
+app.route("/hello").post((request, response) => {
+  const { name } = request.body;
+
+  response.status(201).json({ message: `Hello, ${name}` });
+});
 
 // todo 3. Rrota POST /greetings que deve receber o seguinte JSON: { "name": "<nome do usuário>", "age": <idade do usuário> }.
 // * caso a pessoa usuária tenha idade superior a 17 anos, devolve o JSON { "message": "Hello, <nome do usuário>!" } com o status code 200 - OK;
