@@ -1,25 +1,13 @@
 const express = require("express");
 
+const mockedRecipesDatabase = require("./mocked_databases/recipes");
+const mockedDrinksDatabase = require("./mocked_drinks/drinks.js");
+
 const app = express();
 
 // ! Observação: Para uma aplicação back-end receber requisições de uma aplicação front-end, ou qualquer outra aplicação, é preciso instalar um módulo que libera o acesso da nossa API para outras aplicações. Para isso basta instalar um módulo chamado cors usando npm i cors e adicionar as duas seguintes linhas no seu arquivo index.js .
 const cors = require("cors");
 app.use(cors());
-
-const mockedRecipesDatabase = [
-  { id: 1, name: "Macarrão a Bolonhesa", price: 35.0, waitTime: 25 },
-  { id: 2, name: "Lasanha", price: 40.0, waitTime: 30 },
-  { id: 3, name: "Macarrão com molho branco", price: 35.0, waitTime: 25 },
-];
-
-const mockedDrinksDatabase = [
-  { id: 1, name: "Refrigerante Lata", price: 5.0 },
-  { id: 2, name: "Refrigerante 600ml", price: 8.0 },
-  { id: 3, name: "Suco 300ml", price: 4.0 },
-  { id: 4, name: "Suco 1l", price: 10.0 },
-  { id: 5, name: "Cerveja Lata", price: 4.5 },
-  { id: 6, name: "Água Mineral 500 ml", price: 5.0 },
-];
 
 function databaseInfoSorter(database) {
   const toPreservOriginalDatabase = [...database];
