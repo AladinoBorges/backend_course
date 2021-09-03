@@ -7,7 +7,7 @@ const {
   fileWriter,
   filePaths,
 } = require("./services/filesReaderAndWriter.js");
-const { ageValidator } = require("./services/validators.js");
+const { ageValidator, userInfoValidator } = require("./services/validators.js");
 const simpsonsDatabase = require("./mocked_databases/simpsons.json");
 
 const mockedDatabase = [...simpsonsDatabase];
@@ -47,6 +47,21 @@ app.route("/greetings").post((request, response) => {
 });
 
 // todo 4. Rota PUT /users/:name/:age que deve retornar o seguinte JSON: { "message": "Seu nome é <name> e você tem <age> anos de idade" }.
+app.route("/users/:name/:age").put((request, response) => {
+  const { name, age } = request.params;
+
+  const validated = userInfoValidator(name, age);
+
+  if (validated.userAge < 18) {
+    return response.status(401).json({
+      message: "Underage users cannot be registered.",
+    });
+  } else {
+    response.status(200).json({
+      message: `O seu nome é ${validated.userName} e você tem ${validated.userAge} anos de idade.`,
+    });
+  }
+});
 
 // todo 5. Criar uma API de dados das personagens de Simpsons:
 // * Utilize o modulo fs do Node para ler/escrever arquivos;
