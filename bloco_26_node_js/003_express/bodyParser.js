@@ -13,7 +13,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// todo: implementar nossa rota que vai receber dados no body da requisição.
+// todo: implementar nossa rota que vai receber dados no body da requisição. O PUT serve para criar novos campos (inserir, adicionar) para a nossa base de dados.
 app
   .route("/recipes")
   .get((_request, response) => {
@@ -40,10 +40,6 @@ app
     response.status(201).json({ Sucesso: "Bebida criada com sucesso." });
   });
 
-app.listen(3000, () => {
-  console.log("Aplicação a ser ouvida na porta 3000.");
-});
-
 // todo: rota que recebe um token para ser validado, a regra da validação é checar se o token possui 16 caracteres.
 app.route("/validateToken").get((request, response) => {
   const TOKEN_SIZE = 16;
@@ -55,4 +51,8 @@ app.route("/validateToken").get((request, response) => {
   } else {
     response.status(200).json({ Mensagem: "Token válido." });
   }
+});
+
+app.listen(3000, () => {
+  console.log("Aplicação a ser ouvida na porta 3000.");
 });

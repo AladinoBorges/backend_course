@@ -9,6 +9,7 @@
     "routing": "nodemon howToRoute.js",
     "api": "nodemon apiStructure.js",
     "bodyParser": "nodemon bodyParser.js",
+    "putDelete": "nodemon putDelete.js",
     "start": "node index.js"
   },
   "keywords": [],

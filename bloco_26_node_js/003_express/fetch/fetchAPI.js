@@ -12,14 +12,41 @@ const newRecipes =
     waitTime: 45,
   });
 
-fetch("http://localhost:3000/recipes", {
-  method: "POST",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(newRecipes),
-});
+const targetId = 3;
+const recipesURL = "http://localhost:3000/recipes";
+const recipesURLWithId = `http://localhost:3000/recipes/${targetId}`;
+
+function postOnDatabase(URL, content) {
+  fetch(URL, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(content),
+  });
+}
+
+function putOnDatabase(urlWithId, content) {
+  fetch(urlWithId, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(content),
+  });
+}
+
+function deleteFromDatabase(urlWithId) {
+  fetch(urlWithId, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-type": "application/json",
+    },
+  });
+}
 
 // * method : Método HTTP utilizado, como vimos no primeiro bloco temos 4 que são mais utilizados (GET, POST, PUT e DELETE).
 
