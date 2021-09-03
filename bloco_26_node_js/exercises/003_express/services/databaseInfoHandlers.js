@@ -6,7 +6,7 @@ function findPersonageById(database, personageId) {
   return result;
 }
 
-function checkIfExists(database, personageId) {
+function checkIfIdExists(database, personageId) {
   const stringToNumber = Number(personageId);
 
   const result = database.some(({ id }) => Number(id) === stringToNumber);
@@ -14,4 +14,10 @@ function checkIfExists(database, personageId) {
   return result;
 }
 
-module.exports = { findPersonageById, checkIfExists };
+function checkIfEmailExists(database, userEmail) {
+  const result = database.some(({ email }) => email === userEmail);
+
+  return result;
+}
+
+module.exports = { findPersonageById, checkIfIdExists, checkIfEmailExists };

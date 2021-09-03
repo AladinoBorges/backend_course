@@ -5,24 +5,25 @@ const cors = require("cors");
 const {
   fileReader,
   fileWriter,
-  filePaths: { simpsons },
+  filePaths: { simpsons, users },
 } = require("./services/filesReaderAndWriter.js");
+
 const {
   ageValidator,
   userInfoValidator,
   userTokenValidator,
 } = require("./services/validators.js");
+
 const {
   findPersonageById,
-  checkIfExists,
+  checkIfIdExists,
+  checkIfEmailExists,
 } = require("./services/databaseInfoHandlers.js");
 
-const mockedDatabase = simpsons;
+const { handleSignupInfo } = require("./services/signupHandlers.js");
 
-const MINUS_X = -1;
-
-function handleReader() {
-  const result = fileReader(mockedDatabase);
+function handleReader(database) {
+  const result = fileReader(database);
 
   return result;
 }
@@ -31,6 +32,48 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
+
+// ? EXERCÍCIOS BÔNUS
+// todo 1. Adicione autenticação a todos os endpoints.
+// * O token deve ser enviado através do header Authorization;
+// * token deve ter exatamente 16 caracteres;
+// * Caso o token seja inválido ou inexistente, a resposta deve possuir o status 401 - Unauthorized e o JSON { message: 'Token inválido!' }.
+
+// todo 2. Crie uma rota POST /signup.
+// * A rota deve receber, no body da requisição, os campos email , password , firstName e phone;
+// * Caso algum dos campos não esteja preenchido, a response deve possuir status 401 - Unauthorized e o JSON { message: 'missing fields' };
+// * Caso todos os parâmetros estejam presentes, a rota deve gerar um token aleatório válido, e a resposta deve conter o status 200 - OK, e o JSON { token: '<token-aleatorio>' }.
+app.route("/signup").post(async (request, response) => {
+  const { fullname, phone, email, password, role } = request.body;
+
+  const usersDatabase = await handleReader(users);
+
+  const checkEmailExistence = checkIfEmailExists(usersDatabase, email);
+
+  if (checkEmailExistence) {
+    return response.status(409).json({ message: "Email already exists." });
+  }
+
+  const handleInfo = await handleSignupInfo(
+    fullname,
+    phone,
+    email,
+    password,
+    role,
+  );
+
+  if (handleInfo) {
+    usersDatabase.push(handleInfo);
+
+    await fileWriter(users, usersDatabase);
+
+    return response.status(200).json({ Token: handleInfo.token });
+  } else {
+    response.status(401).json({ message: "Missing fields." });
+  }
+});
+
+// ? EXERCÍCIOS
 
 // todo 1. Rota GET /ping que deve retornar o seguinte JSON: { message: 'pong' }.
 app.route("/ping").get((request, response) => {
@@ -48,7 +91,6 @@ app.route("/ping").get((request, response) => {
 // todo 2. Rota POST /hello que deve receber, no body da requisição, o seguinte JSON: { "name": "<nome do usuário>" }; e deve retornar o seguinte JSON: { "message": "Hello, <nome do usuário>!" }.
 app.route("/hello").post((request, response) => {
   const { name } = request.body;
-
   const token = request.headers.authorization;
 
   const validatedToken = userTokenValidator(token);
@@ -65,10 +107,9 @@ app.route("/hello").post((request, response) => {
 // * Caso a pessoa usuária tenha 17 anos ou menos, devolva o JSON { "message": "Unauthorized" } com o status code 401 - Unauthorized.
 app.route("/greetings").post((request, response) => {
   const { name, age } = request.body;
+  const token = request.headers.authorization;
 
   const validatedAge = ageValidator(age);
-
-  const token = request.headers.authorization;
 
   const validatedToken = userTokenValidator(token);
 
@@ -86,10 +127,9 @@ app.route("/greetings").post((request, response) => {
 // todo 4. Rota PUT /users/:name/:age que deve retornar o seguinte JSON: { "message": "Seu nome é <name> e você tem <age> anos de idade" }.
 app.route("/users/:name/:age").put((request, response) => {
   const { name, age } = request.params;
+  const token = request.headers.authorization;
 
   const validated = userInfoValidator(name, age);
-
-  const token = request.headers.authorization;
 
   const validatedToken = userTokenValidator(token);
 
@@ -125,9 +165,9 @@ app.route("/users/:name/:age").put((request, response) => {
 app
   .route("/simpsons")
   .get(async (request, response) => {
-    const databaseExistenceValidator = await handleReader();
-
     const token = request.headers.authorization;
+
+    const databaseExistenceValidator = await handleReader(simpsons);
 
     const validatedToken = userTokenValidator(token);
 
@@ -143,10 +183,9 @@ app
   })
   .post(async (request, response) => {
     const { id, name } = request.body;
-
-    const simpsonsDatabase = await handleReader();
-
     const token = request.headers.authorization;
+
+    const simpsonsDatabase = await handleReader(simpsons);
 
     const validatedToken = userTokenValidator(token);
 
@@ -154,7 +193,7 @@ app
       return response.status(401).json({ message: "Token inválido." });
     }
 
-    const personageValidator = checkIfExists(simpsonsDatabase, id);
+    const personageValidator = checkIfIdExists(simpsonsDatabase, id);
 
     if (personageValidator) {
       return response.status(409).json({ message: `id ${id} already exists.` });
@@ -170,12 +209,11 @@ app
 // todo 7. Criar um endpoint GET /simpsons/:id. O endpoint deve retornar o personagem com o id informado na URL da requisição. Caso não exista nenhum personagem com o id especificado, retorne o JSON { message: 'simpson not found' } com o status 404 - Not Found.
 app.route("/simpsons/:id").get(async (request, response) => {
   const { id } = request.params;
+  const token = request.headers.authorization;
 
-  const simpsonsDatabase = await handleReader();
+  const simpsonsDatabase = await handleReader(simpsons);
 
   const personage = findPersonageById(simpsonsDatabase, id);
-
-  const token = request.headers.authorization;
 
   const validatedToken = userTokenValidator(token);
 
@@ -192,6 +230,13 @@ app.route("/simpsons/:id").get(async (request, response) => {
 
 app.route("*").all((request, response) => {
   const insertedPath = request.path;
+  const token = request.headers.authorization;
+
+  const validatedToken = userTokenValidator(token);
+
+  if (!validatedToken) {
+    return response.status(401).json({ message: "Token inválido." });
+  }
 
   return response
     .status(404)

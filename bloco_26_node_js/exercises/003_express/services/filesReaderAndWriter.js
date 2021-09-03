@@ -4,6 +4,7 @@ const { readFile, writeFile } = fs;
 
 const filePaths = {
   simpsons: "./mocked_databases/simpsons.json",
+  users: "./mocked_databases/users.json",
 };
 
 const ENCODING = "utf8";
