@@ -7,6 +7,7 @@ const {
   fileWriter,
   filePaths,
 } = require("./services/filesReaderAndWriter.js");
+const { ageValidator } = require("./services/validators.js");
 const simpsonsDatabase = require("./mocked_databases/simpsons.json");
 
 const mockedDatabase = [...simpsonsDatabase];
@@ -33,6 +34,17 @@ app.route("/hello").post((request, response) => {
 // todo 3. Rrota POST /greetings que deve receber o seguinte JSON: { "name": "<nome do usuário>", "age": <idade do usuário> }.
 // * caso a pessoa usuária tenha idade superior a 17 anos, devolve o JSON { "message": "Hello, <nome do usuário>!" } com o status code 200 - OK;
 // * Caso a pessoa usuária tenha 17 anos ou menos, devolva o JSON { "message": "Unauthorized" } com o status code 401 - Unauthorized.
+app.route("/greetings").post((request, response) => {
+  const { name, age } = request.body;
+
+  const validated = ageValidator(age);
+
+  if (!validated) {
+    return response.status(401).json({ message: "Unauthorized" });
+  } else {
+    response.status(200).json({ message: `Hello, ${name}` });
+  }
+});
 
 // todo 4. Rota PUT /users/:name/:age que deve retornar o seguinte JSON: { "message": "Seu nome é <name> e você tem <age> anos de idade" }.
 
