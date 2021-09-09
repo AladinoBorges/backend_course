@@ -1,4 +1,5 @@
 const express = require('express');
+const rescue = require('express-rescue');
 const { readFile } = require('fs').promises;
 
 const errorsRouter = express.Router();
@@ -17,20 +18,26 @@ async function fileReader(filePath, encoding = ENCODING) {
 
 errorsRouter.use(authentitionMiddleware);
 
-errorsRouter.get('/:fileName', async (request, response, next) => {
-  const { fileName } = request.params;
+errorsRouter.get('/:fileName', [
+  rescue(async (request, response, next) => {
+    const { fileName } = request.params;
 
-  try {
     const contentFromFile = await fileReader(fileName);
 
     response.send(contentFromFile);
-  } catch (error) {
-    next(error);
-  }
-});
+  }),
+  (error, _request, _response, next) => {
+    if (error.code == -'ENOENT') {
+      const newError = new Error(error.message);
 
-errorsRouter.use((error, _request, response, _next) => {
-  response.status(500).json({ Error: error.message });
-});
+      newError.code = 'file_not_found';
+      newError.status = 404;
+
+      return next(newError);
+    }
+
+    return next(error);
+  },
+]);
 
 module.exports = errorsRouter;
