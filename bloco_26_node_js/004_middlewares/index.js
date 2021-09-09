@@ -4,6 +4,7 @@ const cors = require('cors');
 
 // * MIDDLEWARES AND ROUTER MIDDLEWARE
 const recipesRouter = require('./routers/recipesRouter.js');
+const errorsRouter = require('./errors/errorHandler.js');
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.get('/close', (_request, response) => {
 });
 
 app.use('/recipes', recipesRouter);
+
+app.use('/profile', errorsRouter);
 
 app.all('*', (request, response) => {
   return response.status(404).json({ message: `The route '${request.path}' do not exist!` });
