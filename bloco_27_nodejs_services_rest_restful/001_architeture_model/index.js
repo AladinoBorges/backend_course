@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 
-const Author = require('./models/Author.js');
-const Book = require('./models/Book.js');
+const Author = require('./models/mongodb/Author.js');
+const Book = require('./models/mongodb/Book.js');
 
 const PORT = process.env.PORT || 3000;
 
