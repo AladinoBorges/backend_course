@@ -1,0 +1,4 @@
+[
+  { "id": 1, "name": "Coders", "initials": "CRT", "country": "Angola", "league": "C++ Masters" },
+  { "id": 2, "name": "Pythons", "initials": "PYS", "country": "Angola" }
+]

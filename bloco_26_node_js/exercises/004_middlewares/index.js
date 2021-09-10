@@ -4,6 +4,8 @@ const cors = require('cors');
 const userRouter = require('./routers/userRouter.js');
 const btcRouter = require('./routers/btcRouter.js');
 const postsRouter = require('./routers/postsRouter.js');
+const teamsRouter = require('./routers/teamsRouter.js');
+
 const routeNotFound = require('./middlewares/routeNotFound.js');
 
 const app = express();
@@ -16,6 +18,7 @@ const PORT = 3000;
 app.use('/user', userRouter);
 app.use('/btc', btcRouter);
 app.use('/posts', postsRouter);
+app.use('/teams', teamsRouter);
 
 app.use('*', (_request, _response, next) => {
   return next({ statusCode: 404, message: 'Opsss, route not found!' });
