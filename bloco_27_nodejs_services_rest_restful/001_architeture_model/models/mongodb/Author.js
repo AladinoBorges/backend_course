@@ -1,3 +1,5 @@
+const { ObjectId } = require('mongodb');
+
 const connection = require('./connection.js');
 
 function fullnameCreator({ id, firstName, middleName, lastName }) {
@@ -12,18 +14,6 @@ function fullnameCreator({ id, firstName, middleName, lastName }) {
   };
 
   return newAuthor;
-}
-
-function serializeSnakeToCamelCase(authorData) {
-  const serializeData = {
-    id: authorData.id,
-    firstName: authorData.first_name,
-    middleName: authorData.middle_name,
-    lastName: authorData.last_name,
-    nationality: authorData.nationality,
-  };
-
-  return serializeData;
 }
 
 async function getAll() {
@@ -45,14 +35,19 @@ async function getAll() {
   return allAuthors;
 }
 
-async function findById(targetId) {
-  const query = 'SELECT id, first_name, middle_name, last_name FROM authors WHERE id = ?';
+async function findById(id) {
+  if (!ObjectId.isValid(id)) {
+    return null;
+  }
 
-  const [author] = await connection.execute(query, [targetId]);
+  const authorData = await connection().then((db) =>
+    db.collection('authors').findOne({ _id: new ObjectId(id) }),
+  );
 
-  if (author.length > 0) {
-    const serializedData = author.map(serializeSnakeToCamelCase)[0];
-    const insertedAuthorFullname = fullnameCreator(serializedData);
+  if (authorData) {
+    const { firstName, middleName, lastName } = authorData;
+
+    const insertedAuthorFullname = fullnameCreator({ id, firstName, middleName, lastName });
 
     return insertedAuthorFullname;
   } else {
