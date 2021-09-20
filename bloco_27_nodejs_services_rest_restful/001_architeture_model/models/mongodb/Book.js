@@ -1,7 +1,7 @@
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require("mongodb");
 
-const connection = require('./connection.js');
-const Author = require('./Author.js');
+const connection = require("./connection.js");
+const Author = require("./Author.js");
 
 function serializeSnakeToCamelCase(bookData) {
   const serializeData = {
@@ -14,7 +14,7 @@ function serializeSnakeToCamelCase(bookData) {
 }
 
 async function getAll() {
-  const allBooks = connection().then((db) => db.collection('books').find().toArray());
+  const allBooks = connection().then((db) => db.collection("books").find().toArray());
 
   return allBooks;
 }
@@ -22,7 +22,7 @@ async function getAll() {
 async function searchByAuthorId(targetAuthorId) {
   const allBooks = connection().then((db) =>
     db
-      .collection('books')
+      .collection("books")
       .find({ authorId: Number(targetAuthorId) })
       .toArray(),
   );
@@ -36,7 +36,7 @@ async function findById(id) {
   }
 
   const bookData = await connection().then((db) =>
-    db.collection('books').findOne({ _id: new ObjectId(id) }),
+    db.collection("books").findOne({ _id: new ObjectId(id) }),
   );
 
   if (bookData) {
@@ -49,16 +49,14 @@ async function findById(id) {
 async function dataIsValid(title, authorId) {
   const authorIdExistence = await Author.findById(authorId);
 
-  if (!title || typeof title !== 'string' || title.length < 3) return false;
-  if (!authorId || typeof authorId !== 'number' || !authorIdExistence) return false;
+  if (!title || typeof title !== "string" || title.length < 3) return false;
+  if (!authorId || !authorIdExistence) return false;
 
   return true;
 }
 
 async function create(title, authorId) {
-  const query = 'INSERT INTO books (title, author_id) VALUES (?, ?)';
-
-  connection.execute(query, [title, authorId]);
+  await connection().then((db) => db.collection("books").insertOne({ title, authorId }));
 }
 
 module.exports = { getAll, searchByAuthorId, findById, dataIsValid, create };

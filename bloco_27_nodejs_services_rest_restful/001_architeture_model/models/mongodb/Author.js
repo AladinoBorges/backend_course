@@ -1,9 +1,9 @@
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require("mongodb");
 
-const connection = require('./connection.js');
+const connection = require("./connection.js");
 
 function fullnameCreator({ id, firstName, middleName, lastName }) {
-  const fullName = [firstName, middleName, lastName].filter((name) => name).join(' ');
+  const fullName = [firstName, middleName, lastName].filter((name) => name).join(" ");
 
   const newAuthor = {
     id,
@@ -18,7 +18,7 @@ function fullnameCreator({ id, firstName, middleName, lastName }) {
 
 async function getAll() {
   const allAuthors = connection()
-    .then((db) => db.collection('authors').find().toArray())
+    .then((db) => db.collection("authors").find().toArray())
     .then((authors) => {
       const authorsData = authors.map(({ _id, firstName, middleName, lastName }) =>
         fullnameCreator({
@@ -41,7 +41,7 @@ async function findById(id) {
   }
 
   const authorData = await connection().then((db) =>
-    db.collection('authors').findOne({ _id: new ObjectId(id) }),
+    db.collection("authors").findOne({ _id: new ObjectId(id) }),
   );
 
   if (authorData) {
@@ -56,19 +56,26 @@ async function findById(id) {
 }
 
 function dataIsValid(firstName, middleName, lastName, nationality) {
-  if (!firstName || typeof firstName !== 'string') return false;
-  if (!lastName || typeof lastName !== 'string') return false;
-  if (middleName && typeof middleName !== 'string') return false;
-  if (nationality && typeof nationality !== 'string') return false;
+  if (!firstName || typeof firstName !== "string") return false;
+  if (!lastName || typeof lastName !== "string") return false;
+  if (middleName && typeof middleName !== "string") return false;
+  if (nationality && typeof nationality !== "string") return false;
 
   return true;
 }
 
 async function create(firstName, middleName, lastName, birthday, nationality) {
-  const query =
-    'INSERT INTO authors (first_name, middle_name, last_name, birthday, nationality) VALUES (?, ?, ?, ?, ?)';
+  await connection()
+    .then((db) =>
+      db
+        .collection("authors")
+        .insertOne({ firstName, middleName, lastName, birthday, nationality }),
+    )
+    .then((result) => {
+      const newAuthor = fullnameCreator({ id: result.insertedId, firstName, middleName, lastName });
 
-  connection.execute(query, [firstName, middleName, lastName, birthday, nationality]);
+      return newAuthor;
+    });
 }
 
 module.exports = { getAll, findById, dataIsValid, create };
