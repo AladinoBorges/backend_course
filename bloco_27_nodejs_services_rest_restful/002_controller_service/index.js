@@ -6,19 +6,13 @@ const Author = require("./controllers/AuthorController.js");
 const Book = require("./models/Book.js");
 
 const errorMiddleware = require("./middlewares/error");
-const { response } = require("express");
+
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-app
-  .route("/authors")
-  .get(Author.getAll)
-  .post(Author.create)
-  .all(function (_request, response) {
-    return response.status(404).json({ message: "Estou perdido, algures no espaço ..." });
-  });
+app.route("/authors").get(Author.getAll).post(Author.create);
 
 app.route("/authors/:id").get(Author.findById);
 
