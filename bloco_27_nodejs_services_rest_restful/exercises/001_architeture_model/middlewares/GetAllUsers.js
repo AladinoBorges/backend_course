@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("../models/MySQL/User");
 
 module.exports = async (_request, response) => {
   const usersList = await User.getAll();

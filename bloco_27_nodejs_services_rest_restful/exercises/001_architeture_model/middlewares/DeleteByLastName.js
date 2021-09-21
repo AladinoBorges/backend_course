@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("../models/MySQL/User");
 
 module.exports = async (request, response) => {
   const { lastName } = request.body;
