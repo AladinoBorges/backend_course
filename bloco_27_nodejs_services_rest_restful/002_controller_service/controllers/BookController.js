@@ -1,6 +1,7 @@
 const rescue = require("express-rescue");
-const service = require("../services/BookService");
 const Joi = require("joi");
+
+const service = require("../services/BookService");
 
 const getAll = rescue(async function (request, response, next) {
   const { authorId } = request.query;
@@ -24,40 +25,31 @@ const getAll = rescue(async function (request, response, next) {
   if (books.error) {
     return next(books.error);
   } else {
-    return response.status(200).json(books);
+    return response.status(200).json(books.books);
   }
 });
 
 const findById = rescue(async function (request, response, next) {
   const { id } = request.params;
 
-  const book = await service.findById(id);
+  const { book, error } = await service.findById(id);
 
-  if (!book.error) {
+  if (!error) {
     return response.status(200).json(book);
   } else {
-    return next(book.error);
+    return next(error);
   }
 });
 
 const create = rescue(async function (request, response, next) {
-  const { error } = Joi.object({
-    title: Joi.string().min(1).max(200).not().empty().required(),
-    authorId: Joi.string().not().empty().required(),
-  }).validate(request.body);
+  const { title, authorId } = request.body;
+
+  const { newBook, error } = await service.create(title, authorId);
 
   if (error) {
     return next(error);
-  }
-
-  const { title, authorId } = request.body;
-
-  const newBook = await service.create(title, authorId);
-
-  if (newBook.error) {
-    return next(newBook.error);
   } else {
-    return response.status(201).json({ message: "Book created successfully!", newBook });
+    return response.status(201).json({ message: "Livro criado com sucesso!", newBook });
   }
 });
 

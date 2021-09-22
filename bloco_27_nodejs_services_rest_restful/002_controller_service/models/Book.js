@@ -13,7 +13,7 @@ async function searchByAuthorId(targetAuthorId) {
   const allBooks = connection().then((db) =>
     db
       .collection("books")
-      .find({ authorId: Number(targetAuthorId) })
+      .find({ author_id: Number(targetAuthorId) })
       .toArray(),
   );
 
@@ -37,7 +37,9 @@ async function findById(id) {
 }
 
 async function checkAuthorExistence(authorId) {
-  const authorExists = await Author.findById(authorId);
+  const authorExists = await connection().then((db) =>
+    db.collection("authors").findOne({ author_id: authorId }),
+  );
 
   if (!authorExists) {
     return null;
@@ -56,14 +58,14 @@ async function checkExistenceByTitle(title) {
   }
 }
 
-async function create(title, authorId) {
+async function create(title, author_id) {
   const newBook = await connection()
-    .then((db) => db.collection("books").insertOne({ title, authorId }))
+    .then((db) => db.collection("books").insertOne({ title, author_id }))
     .then((result) => {
       const book = {
         id: result.insertedId,
         title,
-        authorId,
+        authorId: author_id,
       };
 
       return book;

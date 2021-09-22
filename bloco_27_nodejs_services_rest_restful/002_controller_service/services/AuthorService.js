@@ -10,14 +10,17 @@ async function findById(id) {
   const author = await Author.findById(id);
 
   if (!author) {
-    return {
+    const newError = {
       error: {
         code: "notFound",
         message: `Não foi possível encontrar um autor com o id ${id}`,
       },
     };
+
+    return newError;
   } else {
-    return author;
+    const data = { author };
+    return data;
   }
 }
 
@@ -25,16 +28,19 @@ async function create(firstName, middleName, lastName, birthday, nationality) {
   const authorExists = await Author.findByName(firstName, middleName, lastName);
 
   if (authorExists) {
-    return {
+    const newError = {
       error: {
         code: "alreadyExists",
         message: "Um autor já está registrado com esse nome completo.",
       },
     };
+
+    return newError;
   } else {
     const newAuthor = await Author.create(firstName, middleName, lastName, birthday, nationality);
+    const data = { newAuthor };
 
-    return newAuthor;
+    return data;
   }
 }
 

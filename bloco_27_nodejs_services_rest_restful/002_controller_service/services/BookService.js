@@ -17,7 +17,8 @@ async function searchByAuthorId(authorId) {
       },
     };
   } else {
-    return books;
+    const data = { books };
+    return data;
   }
 }
 
@@ -32,7 +33,8 @@ async function findById(id) {
       },
     };
   } else {
-    return book;
+    const data = { book };
+    return data;
   }
 }
 
@@ -51,9 +53,10 @@ async function create(title, authorId) {
   const bookExists = await Book.checkExistenceByTitle(title);
 
   if (authorExists && !bookExists) {
-    const newAuthor = await Book.create(title, authorId);
+    const newBook = await Book.create(title, authorId);
+    const data = { newBook };
 
-    return newAuthor;
+    return data;
   } else {
     return {
       error: {
