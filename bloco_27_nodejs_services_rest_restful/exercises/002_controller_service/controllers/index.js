@@ -1,4 +1,9 @@
+const PingController = require("./PingController");
+const { findAllAdresses, findAddressByCEP, createNewAddress } = require("./CepController");
+
 module.exports = {
-  PingController: require("./PingController"),
-  CepController: require("./CepController"),
+  PingController,
+  findAllAdresses,
+  findAddressByCEP,
+  createNewAddress,
 };

@@ -4,9 +4,14 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
-const { PingController, CepController } = require("./controllers");
+const {
+  PingController,
+  findAllAdresses,
+  findAddressByCEP,
+  createNewAddress,
+} = require("./controllers");
 
-const ErrorMiddleware = require("./middlewares/error");
+const { validateCEP, cepExists, validateRequestBody, error } = require("./middlewares");
 
 const app = express();
 
@@ -15,9 +20,10 @@ app.use(cors());
 
 app.route("/ping").get(PingController);
 
-app.route("/cep/:cep").get(CepController);
+app.route("/cep").get(findAllAdresses).post(cepExists, validateRequestBody, createNewAddress);
+app.route("/cep/:cep").get(validateCEP, findAddressByCEP);
 
-app.use(ErrorMiddleware);
+app.use(error);
 
 const { PORT } = process.env;
 

@@ -8,6 +8,8 @@ module.exports = function (error, _request, response, _next) {
   const statusByErrorCode = {
     notFound: 404,
     alreadyExists: 409,
+    badRequest: 400,
+    invalidData: 400,
   };
 
   const status = statusByErrorCode[error.code] || 500;
