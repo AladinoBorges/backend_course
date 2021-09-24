@@ -3,7 +3,8 @@ const Joi = require("joi");
 const REGEX = /\d{5}-?\d{3}/;
 const CEP_LENGTH = 8;
 
-const { findAddressByCEP, getAllAddresses } = require("../models/CepModel");
+const { createCEP, findAddressByCEP, getAllAddresses } = require("../models/CepModel");
+const getCepFromExternalSource = require("../models/ExternalApiModel");
 
 function isValidCep(cep) {
   const validate = REGEX.test(cep) && cep.replace("-", "").length === CEP_LENGTH;
@@ -48,7 +49,11 @@ async function findAddressByCep(cep) {
     const data = { CEP };
 
     return data;
-  } else {
+  }
+
+  const cepFromExternalAPI = await getCepFromExternalSource(cep);
+
+  if (!cepFromExternalAPI) {
     const newError = {
       error: {
         code: "notFound",
@@ -57,6 +62,14 @@ async function findAddressByCep(cep) {
     };
 
     return newError;
+  } else {
+    const { cep, logradouro, bairro, localidade, uf } = cepFromExternalAPI;
+
+    await createCEP(cep, logradouro, bairro, localidade, uf);
+
+    const data = { CEP: { cep, logradouro, bairro, localidade, uf } };
+
+    return data;
   }
 }
 
