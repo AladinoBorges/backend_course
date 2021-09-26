@@ -1,0 +1,11 @@
+use('rest_exercicios');
+
+db.authors.drop();
+
+db.products.insertMany([
+  { "name": "Cerveja Skol", "brand": "Ambev"},
+  { "name": "Monitor AGON", "brand": "AOC",},
+  { "name": "MacBook Air", "brand": "Apple",},
+]);
+
+db.products.find().pretty();
