@@ -1,7 +1,7 @@
 function numberValidator(number) {
   const ZERO = 0;
   const messages = {
-    callWithoutParams: 'Loading ...\nNumber validator initialized successfully.',
+    callWithoutParams: 'Loading ... Number validator initialized successfully',
     isInvalidType: 'the inserted value must be a "number".',
     positiveNumber: 'positive number',
     negativeNumber: 'negative number',
