@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha ./tests/**/*$NAME*.test.js --exit"
+    "test": "mocha ./tests/**/*.test.js --exit"
   },
   "keywords": [],
   "author": "Aladino Borges",
