@@ -1,6 +1,6 @@
 use('rest_exercicios');
 
-db.authors.drop();
+db.products.drop();
 
 db.products.insertMany([
   { "name": "Cerveja Skol", "brand": "Ambev"},
