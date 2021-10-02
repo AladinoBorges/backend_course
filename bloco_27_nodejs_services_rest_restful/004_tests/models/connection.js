@@ -15,7 +15,7 @@ async function getConnection() {
     return Promise.resolve(schema);
   }
 
-  const client = await MongoClient.connect(MONGO_DB_HOST, OPTIONS)
+  return MongoClient.connect(MONGO_DB_HOST, OPTIONS)
     .then((conn) => conn.db(DB_NAME))
     .then((dbSchema) => {
       schema = dbSchema;
@@ -24,10 +24,7 @@ async function getConnection() {
     })
     .catch((err) => {
       console.error(err);
-      process.exit(1);
     });
-
-  return client;
 }
 
 module.exports = { getConnection };

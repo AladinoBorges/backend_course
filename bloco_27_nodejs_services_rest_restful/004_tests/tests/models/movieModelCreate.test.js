@@ -1,5 +1,7 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
+const { MongoClient } = require('mongodb');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
 // ? REQUISITOS DO MODEL:
 // todo 1) a API deve permitir a inserção de filmes no banco de dados:
@@ -18,14 +20,18 @@ describe('Insere um novo filme no banco de dados.', () => {
     releaseYear: 1999,
   };
 
-  before(() => {
-    const ID_EXAMPLE = '604cb554311d68f491ba5781';
-    const insertOne = async () => ({ insertedId: ID_EXAMPLE });
-    const collection = async () => ({ insertOne });
-    const db = async (databaseName) => ({ collection });
-    const getConnectionMock = async () => ({ db });
+  const OPTIONS = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  };
 
-    connectionMock = getConnectionMock().then((conn) => conn.db('model_example'));
+  before(async () => {
+    const DBServer = new MongoMemoryServer();
+    const URLMock = await DBServer.getUri();
+
+    connectionMock = await MongoClient.connect(URLMock, OPTIONS).then((conn) =>
+      conn.db('model_example'),
+    );
 
     sinon.stub(mongoConnection, 'getConnection').resolves(connectionMock);
   });
@@ -46,7 +52,15 @@ describe('Insere um novo filme no banco de dados.', () => {
 
       expect(response).to.have.a.property('id');
     });
+
+    it('deve existir um filme com o título cadastrado', async () => {
+      await MoviesModel.create(payloadMovie);
+
+      const movieCreated = await connectionMock
+        .collection('movies')
+        .findOne({ title: payloadMovie.title });
+
+      expect(movieCreated).to.be.not.null;
+    });
   });
 });
-
-// NAME=movieModelCreate npm test
