@@ -3,7 +3,7 @@ const { expect } = require('chai');
 
 const MoviesService = require('../../services/moviesService');
 
-describe('Movies Service Create: Insere um novo filme no banco de dados', () => {
+describe('Movies Service Create: insere um novo filme no banco de dados', () => {
   describe('quando o payload informado não é válido', () => {
     const payloadMovie = {};
 
