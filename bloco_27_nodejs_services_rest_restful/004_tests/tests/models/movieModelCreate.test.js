@@ -16,7 +16,7 @@ describe('Movies Model Create: insere um novo filme no banco de dados.', () => {
 
   const payloadMovie = {
     title: 'Example Movie',
-    directedBy: 'jane Dow',
+    directedBy: 'jane Model Create',
     releaseYear: 1999,
   };
 

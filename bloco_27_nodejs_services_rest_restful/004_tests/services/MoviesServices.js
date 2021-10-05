@@ -8,6 +8,20 @@ function isValid(title, directedBy, releaseYear) {
   return true;
 }
 
+function formatData(data) {
+  const { id, title, directedBy, releaseYear } = data;
+
+  return { id, title, directedBy, releaseYear };
+}
+
+async function getAll() {
+  const movies = await MoviesModel.getAll();
+
+  const formattedData = await movies.map(formatData);
+
+  return formattedData;
+}
+
 async function create({ title, directedBy, releaseYear }) {
   const isMovieDataValid = isValid(title, directedBy, releaseYear);
 
@@ -20,4 +34,4 @@ async function create({ title, directedBy, releaseYear }) {
   return { id };
 }
 
-module.exports = { create };
+module.exports = { create, getAll };

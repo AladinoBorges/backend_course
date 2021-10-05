@@ -1,7 +1,7 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
 
-const MoviesService = require('../../services/moviesService');
+const MoviesService = require('../../services/moviesServices');
 
 describe('Movies Service Create: insere um novo filme no banco de dados', () => {
   describe('quando o payload informado não é válido', () => {
@@ -23,7 +23,7 @@ describe('Movies Service Create: insere um novo filme no banco de dados', () => 
   describe('quando é inserido com sucesso', () => {
     const payloadMovie = {
       title: 'Example Movie',
-      directedBy: 'Jane Doe',
+      directedBy: 'Jane Service Create',
       releaseYear: 1999,
     };
 

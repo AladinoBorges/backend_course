@@ -2,7 +2,7 @@ const sinon = require('sinon');
 const { expect } = require('chai');
 
 const MoviesController = require('../../controllers/MoviesController');
-const MoviesService = require('../../services/moviesService');
+const MoviesService = require('../../services/MoviesServices');
 
 describe('Movies Controller Create: ao chamar o controller de create', () => {
   describe('quando o payload informado não é válido', () => {
@@ -42,7 +42,7 @@ describe('Movies Controller Create: ao chamar o controller de create', () => {
     before(() => {
       request.body = {
         title: 'Example Movie',
-        directedBy: 'Jane Dow',
+        directedBy: 'Jane Controller Create',
         releaseYear: 1999,
       };
 
