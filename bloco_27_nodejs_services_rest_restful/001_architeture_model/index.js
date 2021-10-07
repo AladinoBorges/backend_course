@@ -1,93 +1,94 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const cors = require("cors");
 
-const AuthorModel = require('./models/AuthorModel');
-const BookModel = require('./models/BookModel');
-
-const app = express();
-app.use(bodyParser.json());
-
-app.get('/authors', async function (_request, response) {
-  const authors = await AuthorModel.getAll();
-
-  return response.status(200).json(authors);
-});
-
-app.get('/books', async function (_request, response) {
-  const books = await BookModel.getAll();
-
-  return response.status(200).json(books);
-});
-
-
-app.get('/authors/:id', async function (request, response) {
-  const { id } = request.params;
-
-  const author = await AuthorModel.getById(id);
-
-  if (!author) {
-    return response.status(404).json({
-      error: 'notFound',
-      message: 'Autor não encontrado',
-    });
-  }
-
-  return response.status(200).json(author);
-});
-
-app.get('/books/:id', async function (request, response) {
-  const { id } = request.params;
-
-  const book = await BookModel.getById(id);
-
-  if (!book) {
-    return response.status(404).json({
-      error: 'notFound',
-      message: 'Livro não encontrado',
-    });
-  }
-
-  return response.status(200).json(book);
-});
-
-app.post('/authors', async function (request, response) {
-  const { body } = request;
-
-  const createdWithSuccess = await AuthorModel.create(body);
-
-  if (!createdWithSuccess) {
-    return response.status(400).json({
-      error: 'invalidData',
-      message: 'Falha ao criar um novo autor',
-    });
-  }
-
-  return response.status(200).json({ message: 'Autor criado com sucesso' });
-});
-
-app.post('/books', async function (request, response) {
-  const { body } = request;
-
-  const createdWithSuccess = await BookModel.create(body);
-
-  if (!createdWithSuccess) {
-    return response.status(400).json({
-      error: 'invalidData',
-      message: 'Falha ao criar um novo livro',
-    });
-  };
-
-  return response.status(200).json({ message: 'Livro criado com sucesso' });
-});
-
-// TODO: PERMANENTE
-
-app.all('*', function (_request, response) {
-  return response.status(404).json({ error: 'notFound', message: 'Página não encontrada.' });
-});
+const Author = require("./models/mongodb/Author.js");
+const Book = require("./models/mongodb/Book.js");
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, function () {
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+
+app
+  .route("/authors")
+  .get(async (_request, response) => {
+    const authors = await Author.getAll();
+
+    return response.status(200).json(authors);
+  })
+  .post(async (request, response) => {
+    const { first_name, middle_name, last_name, birthday, nationality } = request.body;
+
+    const validateData = Author.dataIsValid(first_name, middle_name, last_name, nationality);
+
+    if (!validateData) {
+      return response.status(400).json({ message: "Invalid data." });
+    } else {
+      await Author.create(first_name, middle_name, last_name, birthday, nationality);
+
+      return response.status(201).json({ message: "Author created successfully!" });
+    }
+  });
+
+app.route("/authors/:id").get(async (request, response) => {
+  const { id } = request.params;
+
+  const author = await Author.findById(id);
+
+  if (!author) {
+    return response.status(404).json({ messange: "Author not found!" });
+  } else {
+    return response.status(200).json(author);
+  }
+});
+
+app
+  .route("/books")
+  .get(async (request, response) => {
+    const { author_id } = request.query;
+
+    if (!author_id) {
+      const books = await Book.getAll();
+
+      return response.status(200).json(books);
+    }
+
+    const books = await Book.searchByAuthorId(author_id);
+
+    if (!books) {
+      return response.status(404).json({ message: "No books found!" });
+    } else {
+      return response.status(200).json(books);
+    }
+  })
+  .post(async (request, response) => {
+    const { title, author_id } = request.body;
+
+    const validateData = await Book.dataIsValid(title, author_id);
+
+    if (!validateData) {
+      return response.status(400).json({ message: "Invalid data." });
+    } else {
+      await Book.create(title, author_id);
+
+      return response.status(201).json({ message: "Book created successfully!" });
+    }
+  });
+
+app.route("/books/:id").get(async (request, response) => {
+  const { id } = request.params;
+
+  const book = await Book.findById(id);
+
+  if (!book) {
+    return response.status(404).json({ message: "Book not found!" });
+  } else {
+    return response.status(200).json(book);
+  }
+});
+
+app.listen(PORT, () => {
   console.log(`Aplicação a rodar na porta ${PORT}`);
 });
