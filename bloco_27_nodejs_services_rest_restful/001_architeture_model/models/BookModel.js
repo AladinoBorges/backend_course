@@ -5,7 +5,7 @@ function serialize({ id, title, author_id }) {
   return {
     id,
     title,
-    authorId: author_id
+    authorId: author_id,
   };
 }
 
@@ -32,8 +32,12 @@ async function getById(id) {
 async function isValid({ title, authorId }) {
   const authorExists = await AuthorModel.getById(authorId);
 
-  if (!title || typeof title !== 'string') { return false; }
-  if (!authorId || typeof authorId !== 'number' || !authorExists) { return false; }
+  if (!title || typeof title !== 'string') {
+    return false;
+  }
+  if (!authorId || typeof authorId !== 'number' || !authorExists) {
+    return false;
+  }
 
   return true;
 }
@@ -47,9 +51,9 @@ async function create({ title, authorId }) {
     return false;
   }
 
-  await connection.execute(QUERY, [title, authorId]);
+  const newBook = await connection.execute(QUERY, [title, authorId]);
 
-  return isValidData;
+  return newBook;
 }
 
 module.exports = { getAll, getById, create };

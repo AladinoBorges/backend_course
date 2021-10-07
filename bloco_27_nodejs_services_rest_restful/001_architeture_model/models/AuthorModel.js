@@ -36,17 +36,28 @@ async function getById(id) {
 }
 
 function isValid({ firstName, middleName, lastName, birthday, nationality }) {
-  if (!firstName && typeof firstName !== 'string') { return false; }
-  if (middleName && typeof middleName !== 'string') { return false; }
-  if (!lastName && typeof lastName !== 'string') { return false; }
-  if (birthday && typeof birthday !== 'string') { return false; }
-  if (nationality && typeof nationality !== 'string') { return false; }
+  if (!firstName && typeof firstName !== 'string') {
+    return false;
+  }
+  if (middleName && typeof middleName !== 'string') {
+    return false;
+  }
+  if (!lastName && typeof lastName !== 'string') {
+    return false;
+  }
+  if (birthday && typeof birthday !== 'string') {
+    return false;
+  }
+  if (nationality && typeof nationality !== 'string') {
+    return false;
+  }
 
   return true;
 }
 
 async function create({ firstName, middleName, lastName, birthday, nationality }) {
-  const QUERY = 'INSERT INTO model_example.authors (first_name, middle_name, last_name, birthday, nationality) VALUES(?, ?, ?, ?, ?);';
+  const QUERY =
+    'INSERT INTO model_example.authors (first_name, middle_name, last_name, birthday, nationality) VALUES(?, ?, ?, ?, ?);';
 
   const isValidData = isValid({ firstName, middleName, lastName, nationality });
 
@@ -54,9 +65,15 @@ async function create({ firstName, middleName, lastName, birthday, nationality }
     return false;
   }
 
-  await connection.execute(QUERY, [firstName, middleName, lastName, birthday, nationality]);
+  const newAuthor = await connection.execute(QUERY, [
+    firstName,
+    middleName,
+    lastName,
+    birthday,
+    nationality,
+  ]);
 
-  return isValidData;
+  return newAuthor;
 }
 
 module.exports = { getAll, getById, create };

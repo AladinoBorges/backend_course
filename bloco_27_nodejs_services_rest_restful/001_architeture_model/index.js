@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const AuthorModel = require('./models/AuthorModel');
-const BookModel = require('./models/BookModel');
+const AuthorModel = require('./models/mongo/AuthorModel');
+const BookModel = require('./models/mongo/BookModel');
 
 const app = express();
 app.use(bodyParser.json());
@@ -18,7 +18,6 @@ app.get('/books', async function (_request, response) {
 
   return response.status(200).json(books);
 });
-
 
 app.get('/authors/:id', async function (request, response) {
   const { id } = request.params;
@@ -75,7 +74,7 @@ app.post('/books', async function (request, response) {
       error: 'invalidData',
       message: 'Falha ao criar um novo livro',
     });
-  };
+  }
 
   return response.status(200).json({ message: 'Livro criado com sucesso' });
 });
