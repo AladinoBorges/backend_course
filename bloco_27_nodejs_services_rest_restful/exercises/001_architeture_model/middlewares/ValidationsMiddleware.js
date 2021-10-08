@@ -1,6 +1,8 @@
 const Joi = require('joi');
 const { ObjectId } = require('mongodb');
 
+const UserModel = require('../models/UserModel');
+
 function idValidation(request, _response, next) {
   const { id } = request.params;
 
@@ -46,4 +48,16 @@ function dataValidation(request, _response, next) {
   return next();
 }
 
-module.exports = { idValidation, dataValidation };
+async function checkIfUserExists(request, _response, next) {
+  const { id } = request.params;
+
+  const user = await UserModel.getById(id);
+
+  if (!user) {
+    return next({ code: 'notFound', message: 'Usuário não encontrado' });
+  }
+
+  return next();
+}
+
+module.exports = { idValidation, dataValidation, checkIfUserExists };

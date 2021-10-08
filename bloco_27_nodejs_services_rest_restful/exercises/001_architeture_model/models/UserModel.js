@@ -10,7 +10,8 @@ async function getAll() {
     .then((allUsers) =>
       allUsers.map(({ _id, firstName, lastName, email }) => ({
         id: _id,
-        fullName: `${firstName} ${lastName}`,
+        firstName,
+        lastName,
         email,
       })),
     );
@@ -32,7 +33,8 @@ async function getById(id) {
   return [
     {
       id: _id,
-      fullName: `${firstName} ${lastName}`,
+      firstName,
+      lastName,
       email,
     },
   ];
@@ -46,4 +48,21 @@ async function create({ firstName, lastName, email, password }) {
   return newUser;
 }
 
-module.exports = { getAll, getById, create };
+async function update(id, { firstName, lastName, email, password }) {
+  const newData = { firstName, lastName, email, password };
+
+  const user = await getConnection().then((db) =>
+    db
+      .collection(COLLECTION)
+      .updateOne({ _id: new ObjectId(id) }, { $set: newData }, { returnOriginal: false })
+      .then(({ modifiedCount }) => (modifiedCount ? true : null)),
+  );
+
+  if (user) {
+    return [{ id, firstName, lastName, email }];
+  }
+
+  return user;
+}
+
+module.exports = { getAll, getById, create, update };
