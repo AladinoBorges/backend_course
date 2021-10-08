@@ -10,10 +10,16 @@ router.get('/', async (_request, response) => {
   return response.status(200).json(users);
 });
 
-router.get('/:id', idValidation, async (request, response) => {
+router.get('/:id', idValidation, async (request, response, next) => {
   const { id } = request.params;
 
-  return response.status().json();
+  const user = await UserModel.getById(id);
+
+  if (!user) {
+    return next({ code: 'notFound', message: 'Usuário não encontrado' });
+  }
+
+  return response.status(200).json(user);
 });
 
 router.post('/', dataValidation, async (request, response) => {
