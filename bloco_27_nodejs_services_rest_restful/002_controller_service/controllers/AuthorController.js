@@ -20,14 +20,10 @@ const getById = rescue(async (request, response, next) => {
   return response.status(200).json(author);
 });
 
-const create = rescue(async (request, response, next) => {
+const create = rescue(async (request, response, _next) => {
   const { body } = request;
 
   const author = await AuthorService.create(body);
-
-  if (author.error) {
-    return next(author.error);
-  }
 
   return response.status(200).json({ message: 'Autor criado com sucesso', author });
 });

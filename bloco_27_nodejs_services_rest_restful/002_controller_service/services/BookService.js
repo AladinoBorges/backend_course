@@ -1,7 +1,7 @@
 const { ObjectId } = require('mongodb');
 
 const BookModel = require('../models/mongo/BookModel');
-const AuthorModel = require('../models/mongo/AuthorModel');
+// const AuthorModel = require('../models/mongo/AuthorModel');
 
 function serialize({ id, title, authorId }) {
   return { id, title, authorId };
@@ -18,14 +18,14 @@ async function getAll() {
 }
 
 async function getById(id) {
-  if (!ObjectId.isValid(id)) {
-    return {
-      error: {
-        code: 'invalidData',
-        message: 'O id é inválido',
-      },
-    };
-  }
+  // if (!ObjectId.isValid(id)) {
+  //   return {
+  //     error: {
+  //       code: 'invalidData',
+  //       message: 'O id é inválido',
+  //     },
+  //   };
+  // }
 
   const book = await BookModel.getById(id);
 
@@ -43,44 +43,42 @@ async function getById(id) {
   return [{ id, title, authorId }];
 }
 
-// TODO : MUDAR A VALIDAÇÃO DOS DADOS PARA UM MIDDLEWARE COM JOI
+// async function isValid({ title, authorId }) {
+//   if (!authorId || !title || typeof title !== 'string') {
+//     return false;
+//   }
 
-async function isValid({ title, authorId }) {
-  if (!authorId || !title || typeof title !== 'string') {
-    return false;
-  }
+//   const authorExists = await AuthorModel.getById(authorId);
 
-  const authorExists = await AuthorModel.getById(authorId);
+//   if (!authorExists) {
+//     return false;
+//   }
 
-  if (!authorExists) {
-    return false;
-  }
-
-  return true;
-}
+//   return true;
+// }
 
 async function create(bookData) {
-  const isValidData = await isValid(bookData);
+  // const isValidData = await isValid(bookData);
 
-  if (!isValidData) {
-    return {
-      error: {
-        code: 'invalidData',
-        message: 'Dados inválidos',
-      },
-    };
-  }
+  // if (!isValidData) {
+  //   return {
+  //     error: {
+  //       code: 'invalidData',
+  //       message: 'Dados inválidos',
+  //     },
+  //   };
+  // }
 
-  const bookExists = await BookModel.findByTitleAndAuthorId(bookData);
+  // const bookExists = await BookModel.findByTitleAndAuthorId(bookData);
 
-  if (bookExists) {
-    return {
-      error: {
-        code: 'alreadyExists',
-        message: 'Este livro já se encontra cadastrado',
-      },
-    };
-  }
+  // if (bookExists) {
+  //   return {
+  //     error: {
+  //       code: 'alreadyExists',
+  //       message: 'Este livro já se encontra cadastrado',
+  //     },
+  //   };
+  // }
 
   const book = await BookModel.create(bookData);
 
