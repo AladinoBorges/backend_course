@@ -38,6 +38,8 @@ function submitedData(request, _response, next) {
   return next();
 }
 
+// TODO : ESTA PARTE PODERIA ESTAR NO SERVICE E PASSAR O ERRO DIRETAMENTE PARA O CONTROLLER ?
+
 async function checkIfExistsByFullname(request, _response, next) {
   const { body } = request;
 
