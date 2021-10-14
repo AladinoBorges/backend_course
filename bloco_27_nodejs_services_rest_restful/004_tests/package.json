@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha ./tests/**/*.test.js --exit",
+    "test": "mocha --timeout 10000 ./tests/**/*.test.js --exit",
     "dev": "nodemon index.js"
   },
   "keywords": [],
