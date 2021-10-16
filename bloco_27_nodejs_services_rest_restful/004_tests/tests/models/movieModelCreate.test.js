@@ -6,7 +6,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoConnection = require('../../connections/connectionMongo');
 const MovieModel = require('../../models/MovieModel');
 
-describe('Insere um novo filme no BD', () => {
+describe('MOVIES MODEL CREATE: Insere um novo filme no BD', () => {
   let connectionMock;
 
   const payloadMovie = {
