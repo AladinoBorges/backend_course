@@ -2,7 +2,7 @@ const mongoClient = require("mongodb").MongoClient;
 
 const MONGO_DB_URL = "mongodb://localhost:27017"; // ou coloque sua URL do MongoDB aqui
 
-connection = () =>
+const connection = () =>
   mongoClient
     .connect(MONGO_DB_URL, {
       useNewUrlParser: true,
