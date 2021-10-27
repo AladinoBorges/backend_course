@@ -1,0 +1,14 @@
+[
+  {
+    "username": "aladinoborges",
+    "email": "email@teste.com",
+    "password": 12345678,
+    "token": "1f266c612de6"
+  },
+  {
+    "username": "hevgeniks",
+    "email": "hevgeniks@teste.com",
+    "password": 12345678,
+    "token": "c243035f3534"
+  }
+]

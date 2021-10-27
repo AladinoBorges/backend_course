@@ -1,0 +1,21 @@
+{
+  "name": "001_introduction",
+  "version": "1.0.0",
+  "description": "",
+  "main": "exercises.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "imc": "node imc.js",
+    "speed": "node speed.js",
+    "guessing": "node guessingGame.js",
+    "factorial": "node factorial.js",
+    "fibonacci": "node fibonacci.js",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Aladino Borges",
+  "license": "ISC",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}

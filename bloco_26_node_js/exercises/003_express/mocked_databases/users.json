@@ -1,0 +1,29 @@
+[
+  {
+    "id": "1",
+    "fullname": "Aladino Borges",
+    "phone": "00351900000001",
+    "email": "aladino@email.com",
+    "password": "Qwerty123",
+    "role": "Administrator",
+    "token": "8f99780f1029fc42dcdbe0663a4ecab6"
+  },
+  {
+    "id": "2",
+    "fullname": "Euclides Borges",
+    "phone": "00351900000001",
+    "email": "euclides@email.com",
+    "password": "zxcvbn456",
+    "role": "Moderator",
+    "token": "1921cbea4521de9649a4dff2b59b3f68"
+  },
+  {
+    "id": 3,
+    "fullname": "Eulálio Borges",
+    "phone": "00244900000002",
+    "email": "eulalio@email.com",
+    "password": "asdfgh789",
+    "role": "Level 1 User",
+    "token": "c34f1bc51d4b25fd058520850502d311"
+  }
+]

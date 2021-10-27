@@ -1,0 +1,40 @@
+use("trybe");
+db.transactions.aggregate([
+  { $project: { _id: false, bank: true, value: true } },
+]);
+
+//todo: Quando você nega um campo específico, todos os outros serão incluídos no documento de saída.
+db.transactions.aggregate([{ $project: { value: false } }]);
+
+//todo: Para documentos embedados , seguimos os mesmos conceitos de dot notation.
+db.books.deleteMany({});
+
+db.books.insertOne({
+  _id: 1,
+  title: "A Fundação",
+  isbn: "0001122223334",
+  author: { last: "Asimov", first: "Isaac" },
+  copies: 5,
+});
+
+db.books.aggregate([{ $project: { "author.id": false, copies: false } }]);
+
+//todo: Inserir campos calculados.
+const ISBN = "$isbn";
+
+db.books.aggregate([
+  {
+    $project: {
+      title: true,
+      isbn: {
+        prefix: { $substr: [ISBN, 0, 3] },
+        group: { $substr: [ISBN, 3, 2] },
+        publisher: { $substr: [ISBN, 5, 4] },
+        title: { $substr: [ISBN, 9, 3] },
+        checkDigit: { $substr: [ISBN, 12, 1] },
+      },
+      lastName: "$author.last",
+      copiesSold: "$copies",
+    },
+  },
+]);

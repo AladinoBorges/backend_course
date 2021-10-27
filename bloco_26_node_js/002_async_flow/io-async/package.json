@@ -1,0 +1,13 @@
+{
+  "name": "io-async",
+  "version": "1.0.0",
+  "description": "",
+  "main": "readFile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node readFile.js"
+  },
+  "keywords": [],
+  "author": "Aladino Borges",
+  "license": "ISC"
+}

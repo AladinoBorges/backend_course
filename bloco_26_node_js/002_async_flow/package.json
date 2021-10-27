@@ -1,0 +1,19 @@
+{
+  "name": "002_async_flow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "callbacks": "node callbacks.js",
+    "promises": "node promises.js",
+    "reader": "node files_reader.js",
+    "writer": "node writeFile.js",
+    "awaiter": "node async_await.js",
+    "many": "node async_await_many_promises.js",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Aladino Borges",
+  "license": "ISC"
+}
